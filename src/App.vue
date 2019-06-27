@@ -1,28 +1,45 @@
-<template>
+<template lang="html">
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <nav>
+
+    </nav>
+    <h1>Energy Tracker</h1>
+    <google-chart :generationMix="generationMix"></google-chart>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import GoogleChart from "./components/GoogleChart.vue";
 
 export default {
-  name: 'app',
+  name: "app",
+  data() {
+    return {
+      from: "",
+      to: "",
+      energyMix: [],
+      generationMix: [["Fuel", "Percentage"]]
+    }
+  },
+  mounted() {
+    fetch("https://api.carbonintensity.org.uk/generation")
+    .then(res => res.json()).then(data => {
+      this.from = data.data.from;
+      this.to = data.data.to;
+      this.energyMix = data.data.generationmix;
+      this.generationMix = this.generationMix.concat(this.convertObjectArray());
+    });
+  },
+  methods: {
+    convertObjectArray() {
+      return this.energyMix.map(energyObject => [energyObject.fuel, energyObject.perc])
+    }
+  },
   components: {
-    HelloWorld
+    "google-chart": GoogleChart
   }
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="css" scoped>
 </style>
