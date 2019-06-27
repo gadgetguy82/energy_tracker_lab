@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     convertObjectArray() {
-      return this.energyMix.map(energyObject => [energyObject.fuel, energyObject.perc])
+      return this.energyMix.map(energyObject => [energyObject.fuel, parseFloat(energyObject.perc)])
     }
   },
   components: {
